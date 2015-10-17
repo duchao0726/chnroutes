@@ -90,7 +90,7 @@ route add default gw $VPNGW
 echo "$INFO $(date "+%d/%b/%Y:%H:%M:%S") adding the static routes, this may take a while." >> $LOG
 
 ##### begin batch route #####
-./set-route-up.sh $OLDGW
+/jffs/pptp/set-route-up.sh $OLDGW
 ##### end batch route #####
 
 

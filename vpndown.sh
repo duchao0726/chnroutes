@@ -69,7 +69,7 @@ esac
 echo "[INFO] removing the static routes"
 
 ##### begin batch route #####
-./set-route-down.sh
+/jffs/pptp/set-route-down.sh
 ##### end batch route #####
 
 #route del -host $PPTPSRV 
