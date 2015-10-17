@@ -109,6 +109,41 @@ rm /tmp/vpn_oldgw
     os.chmod('ip-pre-up', 00755)
     os.chmod('ip-down', 00755)
 
+def generate_ddwrtpptp(metric):
+    results = fetch_ip_data()
+
+    upscript_header = """\
+#!/bin/sh
+
+OLDGW=$1
+
+"""
+
+    downscript_header = """\
+#!/bin/sh
+
+"""
+
+    upfile = open('set-route-up.sh', 'w')
+    downfile = open('set-route-down.sh', 'w')
+
+    upfile.write(upscript_header)
+    downfile.write(downscript_header)
+
+    for ip, _, mask in results:
+        upfile.write('route add -net %s/%s gw $OLDGW\n' %
+                     (ip, mask))
+        downfile.write('route del -net %s/%s\n' % (ip, mask))
+
+    upfile.write('\n')
+    downfile.write('\n')
+
+    upfile.close()
+    downfile.close()
+
+    os.chmod('set-route-up.sh', 0o755)
+    os.chmod('set-route-down.sh', 0o755)
+
 def generate_mac(_):
     results = fetch_ip_data()
 
@@ -218,7 +253,7 @@ def main():
                         dest='platform',
                         default='openvpn',
                         nargs='?',
-                        choices=['openvpn', 'old', 'mac', 'linux', 'win'],
+                        choices=['openvpn', 'old', 'mac', 'linux', 'win', 'ddwrtpptp'],
                         help="target platform")
     parser.add_argument('-m',
                         dest='metric',
@@ -239,6 +274,8 @@ def main():
         generate_mac(args.metric)
     elif args.platform.lower() == 'win':
         generate_win(args.metric)
+    elif args.platform.lower() == 'ddwrtpptp':
+        generate_ddwrtpptp(args.metric)
     else:
         exit(1)
 

@@ -1,4 +1,5 @@
-*.sh
+set-route-up.sh
+set-route-down.sh
 *.txt
 *.bat
 ip-*
